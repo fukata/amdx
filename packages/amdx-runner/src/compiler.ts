@@ -52,6 +52,50 @@ const ampComponents = {
       React.createElement("amp-img", ampImgProps)
     );
   },
+  a(props: any) {
+    // only url
+    if (props.href === props.children) {
+      // amp-twitter
+      // expect https://twitter.com/username/status/xxxxx
+      const matchTwitter = props.href.match(/^https?:\/\/twitter\.com\/\w+\/status\/([0-9]+)$/)
+      if (matchTwitter) {
+        const ampTwitterProps = {
+          "data-tweetid": matchTwitter[1],
+          width: "375",
+          height: "472",
+          layout: "responsive",
+        }
+        return React.createElement(
+          "div",
+          { className: "amp-twitter-container" },
+          React.createElement("amp-twitter", ampTwitterProps)
+        );
+      }
+
+      // amp-youtube
+      // expect https://www.youtube.com/watch?v=xxxxx
+      const matchYoutube = props.href.match(/^https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([0-9a-zA-Z\-]+)$/)
+      if (matchYoutube) {
+        const ampYoutubeProps = {
+          "data-videoid": matchYoutube[1],
+          width: "480",
+          height: "270",
+          layout: "responsive",
+        }
+        return React.createElement(
+          "div",
+          { className: "amp-youtube-container" },
+          React.createElement("amp-youtube", ampYoutubeProps)
+        );
+      }
+    }
+
+    return React.createElement(
+      "a",
+      { href: props.href, title: props.title },
+      props.children ?? props.href,
+    );
+  },
 };
 
 export function compile(
